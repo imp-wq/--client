@@ -1,0 +1,72 @@
+.leftside{
+    border-radius: 50px;
+    background-color: #f4f4f4;
+    display: table;
+    max-width: 310px;
+}
+.rightside{
+    margin-left: auto;
+    border-radius: 50px;
+    background-color: #dfdfdf;
+    display: table;
+    max-width: 310px;
+}
+body{
+    background-color: #f7f7f7;
+}
+.active,.active:hover{
+    background-color: #e5f8e6 !important;
+}
+.mbody{
+    overflow: auto;
+}
+@media screen and (max-width: 700px) {
+    .messageSection > .mbody{
+        height: 160px !important;
+    }
+}
+.pf{
+    width: 70px;
+}
+.left-col{
+    border-right: 1px solid #e7e7e7;
+    height: 100%;
+}
+.messageBox{
+    width: 100%;
+    border: 1px solid #e7e7e7;
+    background-color: white;
+}
+.innerbox{
+    height: 500px;
+}
+.upperbox{
+    height: 70px;
+    border-bottom: 1px solid #e7e7e7;
+}
+.messageBox .list{
+    cursor: pointer;
+}
+.list:hover{
+    background-color: #f7f7f7;
+}
+.ant-avatar{
+    width: 45px !important;
+    height: 45px !important;
+}
+.messageBox .title{
+    font-size: 14px;
+}
+.messageBox .smessage{
+    margin-top: -3px;
+}
+.message,.profile{
+    font-size: 14px;
+}
+div.vertical-line{
+    width: 1px; 
+    background-color: #e7e7e7;
+    height: 18px; 
+    margin-top: 3px;
+    float: left; 
+  }

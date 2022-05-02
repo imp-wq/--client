@@ -1,0 +1,72 @@
+{
+  "name": "realtime_chatapp",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@popperjs/core": "^2.4.4",
+    "@reduxjs/toolkit": "^1.5.0",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.5.0",
+    "@testing-library/user-event": "^7.2.1",
+    "@types/classnames": "^2.2.10",
+    "@types/javascript-time-ago": "^2.0.1",
+    "@types/jest": "^24.9.1",
+    "@types/node": "^12.12.58",
+    "@types/react": "^16.9.49",
+    "@types/react-beforeunload": "^2.1.0",
+    "@types/react-dom": "^16.9.8",
+    "@types/react-redux": "^7.1.16",
+    "@types/react-router-dom": "^5.1.5",
+    "@types/react-scroll": "^1.8.0",
+    "@types/socket.io-client": "^1.4.33",
+    "antd": "^4.6.4",
+    "axios": "^0.21.0",
+    "bootstrap": "^4.5.2",
+    "classnames": "^2.2.6",
+    "javascript-time-ago": "^2.0.13",
+    "jquery": "^3.5.1",
+    "konva": "^8.0.1",
+    "puppeteer": "^9.1.0",
+    "react": "^16.13.1",
+    "react-beforeunload": "^2.2.4",
+    "react-dom": "^16.13.1",
+    "react-konva": "^17.0.2-0",
+    "react-loader-spinner": "^4.0.0",
+    "react-redux": "^7.2.2",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "3.4.3",
+    "react-scroll": "^1.8.1",
+    "redux": "^4.0.5",
+    "socket.io-client": "^2.3.0",
+    "styled-components": "^5.2.1",
+    "typescript": "^3.7.5",
+    "use-image": "^1.0.7"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "jest",
+    "eject": "react-scripts eject"
+  },
+  "proxy": "http://localhost:5000/",
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@babel/core": "^7.13.10",
+    "@babel/preset-env": "^7.13.10",
+    "@types/styled-components": "^5.1.4"
+  }
+}
