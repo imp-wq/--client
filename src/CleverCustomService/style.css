@@ -3,6 +3,10 @@
     color: #fff;
 }
 
+.tip strong {
+    color: skyblue;
+}
+
 .phone {
     color: skyblue;
 }

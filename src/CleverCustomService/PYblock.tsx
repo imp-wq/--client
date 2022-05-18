@@ -14,9 +14,6 @@ import CancelMsg from './components/CancelMsg'
 // 用户信息格式：{id: '1234567@qq.com', username: 'wzy'}
 // PYmessage为从Python模块发来的信息，用于进行功能的分支判断
 
-// 需要完成3个订单才能退货
-const MemberQuality=3
-
 // const PYblock = ({message: Messages | null,locale:String,{BotSuggestions,user,to},socket}) => {
 const PYblock = ({context}) => {
     const {message,locale,BotSuggestions,user,to,socket}=context
@@ -38,17 +35,18 @@ const PYblock = ({context}) => {
                 break
             }
             case 'Discount': {
-                axios.get('http://localhost:5000/member',{params:{email:user.id}}).then(({data:res})=>{
-                    setState(JSON.parse(res))
+                axios.get('http://localhost:5000/discount',{params:{id:user.id}}).then(({data:res})=>{
+                    // setState(JSON.parse(res))
+                    setState(res)
                 })
                 break
             } 
-            case 'Cancel': {
-                axios.get('http://localhost:5000/member',{params:{email:user.id}}).then(({data:res})=>{
-                    setState(JSON.parse(res))
-                })
-                break
-            }  
+            // case 'Cancel': {
+            //     axios.get('http://localhost:5000/member',{params:{email:user.id}}).then(({data:res})=>{
+            //         setState(JSON.parse(res))
+            //     })
+            //     break
+            // }  
             default: return
         }
             
@@ -63,15 +61,23 @@ const PYblock = ({context}) => {
         return <DeliveryInfoTable data={state}/>
     }
     case 'Member': return (
-        <MemberMsg orderNum={state.message} MemberQuality={MemberQuality}/>
+        // <MemberMsg orderNum={state.message} MemberQuality={MemberQuality}/>
+        <DiscountMsg data={state}/>
     )
     case 'Discount': return (
-        <DiscountMsg orderNum={state.message}  MemberQuality={MemberQuality} discount={7}/>
+        <DiscountMsg data={state}/>
     )
-    case 'Cancel': return (
-        <CancelMsg orderNum={state.message}  MemberQuality={MemberQuality} chance={1}/>
-    )
-    default: return <h2>智能客服不明白</h2>
+    // case 'Cancel': return (
+    //     <CancelMsg orderNum={state.message}  MemberQuality={MemberQuality} chance={1}/>
+    // )
+    default: return <div className='tip'>
+        <p>您好，我是智能客服。</p>
+        <p>输入<strong>'订单'</strong>查询订单信息</p>
+        <p>输入<strong>'物流'</strong>查询物流信息</p>
+        <p>输入<strong>'会员/优惠'</strong>查询会员和优惠的规则</p>
+        <p>也可以点击底部按钮对订单进行相关操作</p>
+    </div>
+    
   }
 }
 

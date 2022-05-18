@@ -1,0 +1,43 @@
+.container {
+    position: absolute;
+    height: 100%;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.box {
+    height: 100px;
+    width: 300px;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.tips {
+    flex: 2;
+}
+
+.box button {
+    flex: 1;
+    border: none;
+    color: #fff;
+}
+
+.success {
+    background-color: skyblue;
+}
+
+.fail {
+    background-color: silver;
+}
+
+.box button:hover {
+    background-color: #fff;
+    color: #000;
+    border: 1px solid black;
+}

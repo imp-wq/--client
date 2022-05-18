@@ -1,12 +1,12 @@
 import store from '../app/state/store';
-import GetStatus from './GetStatus';
+// import GetStatus from './GetStatus';
 import getCookie from './getCookie';
 import ForceUserOut from './ForceUserOut';
 const axios = require('axios').default;
 
 let userData, userEmail;
 
-try { 
+try {
     // set the user that's online
     userData = JSON.parse(localStorage.getItem('userData'));
     userEmail = userData.id;
@@ -14,7 +14,7 @@ try {
     ForceUserOut();
 }
 
-const FetchData = async () => {
+const FetchData = async() => {
     // set Orders
     userData = JSON.parse(localStorage.getItem('userData'));
     userEmail = userData.id
@@ -24,7 +24,7 @@ const FetchData = async () => {
     store.dispatch({ type: "INITIALIZE_ORDER", payload: Orders });
 
     //Get Initial status of orders
-    GetStatus(userData, Orders);
+    // GetStatus(userData, Orders);
 
     //Periodically get Status
     ReloadDetails();
@@ -32,11 +32,11 @@ const FetchData = async () => {
 
 // Check for updates every minute
 export const ReloadDetails = () => {
-    setInterval( async () => {
+    setInterval(async() => {
         const dataPresent = await JSON.parse(localStorage.getItem('userData'));
-        if(dataPresent){
+        if (dataPresent) {
             const Orders = await fetchOrders(dataPresent.id);
-            GetStatus(userData, Orders) 
+            // GetStatus(userData, Orders)
         } else {
             alert('There was an error verifying your account. Please login to verify your account');
             ForceUserOut();
@@ -47,15 +47,15 @@ export const ReloadDetails = () => {
 const fetchOrders = async email => {
     let userOrders;
     await axios.get('http://localhost:5000/order', {
-        headers:{
+        headers: {
             auth: getCookie('jwt')
         },
         params: {
             email
         }
-    }).then ( result => {
+    }).then(result => {
         userOrders = result.data.Orders;
-    }).catch( err => {
+    }).catch(err => {
         alert('There was an error verifying your account. HAHAHAHA Please login to verify your account');
         ForceUserOut();
     })

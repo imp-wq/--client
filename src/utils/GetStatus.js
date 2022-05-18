@@ -6,15 +6,15 @@ const axios = require('axios').default;
 let socket = io(socketLink);
 
 // eslint-disable-next-line no-extend-native
-Array.prototype.move = function (from, to) {
+Array.prototype.move = function(from, to) {
     this.splice(to, 0, this.splice(from, 1)[0]);
 };
 
 
 const GetStatus = (userData, Orders) => {
 
-    if( store && Orders ){
-        Orders.forEach( i => {
+    if (store && Orders) {
+        Orders.forEach(i => {
             const { estimatedTime, currentProcess } = i;
 
             //today's date
@@ -31,39 +31,34 @@ const GetStatus = (userData, Orders) => {
             const DateNow = new Date(DateTodayString);
 
             const diffTime = Math.abs(DateNow - orderDate);
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
             //This process would honestly be done manually but for the sake of demonstration
             //the automatic message it's changed via function
             let cProcess;
 
-                if (diffDays >= 12){
-                    cProcess = 'Processing...';
-                }
-                else if (diffDays < 12 && diffDays >= 10) {
-                    cProcess = 'Process D';
-                }
-                else if (diffDays < 10 && diffDays >= 8 ) {
-                    cProcess = 'Process B';
-                }
-                else if (diffDays < 8 && diffDays >= 5 ) {
-                    cProcess = 'Process C';
-                }
-                else if (diffDays < 5 && diffDays >= 1){
-                    cProcess = 'Process D'
-                }
-                else if ( diffDays < 1 ){
-                    cProcess = 'Ready for collection'
-                }
+            if (diffDays >= 12) {
+                cProcess = 'Processing...';
+            } else if (diffDays < 12 && diffDays >= 10) {
+                cProcess = 'Process D';
+            } else if (diffDays < 10 && diffDays >= 8) {
+                cProcess = 'Process B';
+            } else if (diffDays < 8 && diffDays >= 5) {
+                cProcess = 'Process C';
+            } else if (diffDays < 5 && diffDays >= 1) {
+                cProcess = 'Process D'
+            } else if (diffDays < 1) {
+                cProcess = 'Ready for collection'
+            }
 
-            if(currentProcess !== cProcess) {
-                UpdateUser({i, cProcess, userData});
+            if (currentProcess !== cProcess) {
+                UpdateUser({ i, cProcess, userData });
             }
         })
     }
 }
 
-const UpdateUser = async ({i, cProcess, userData}) => {
+const UpdateUser = async({ i, cProcess, userData }) => {
 
     const { users, language } = store.getState();
 
@@ -71,26 +66,29 @@ const UpdateUser = async ({i, cProcess, userData}) => {
         params: {
             user: users.userEmail,
             orderId: i._id,
-            Process: cProcess, 
+            Process: cProcess,
             language
         }
-    }).then( result => {
+    }).then(result => {
         const { message, orderId, Process } = result.data;
 
-        store.dispatch({type: 'EDIT_ORDER', payload: {
-            id: orderId,
-            process: Process
-        }})
+        store.dispatch({
+            type: 'EDIT_ORDER',
+            payload: {
+                id: orderId,
+                process: Process
+            }
+        })
 
-        socket.emit('message-client', { 
-            senderId: 'Customer-Service-auto', 
-            username: userData.username, 
-            message, 
-            to: userData.id, 
+        socket.emit('message-client', {
+            senderId: 'Customer-Service-auto',
+            username: userData.username,
+            message,
+            to: userData.id,
             date: new Date(),
             language: language
         })
-    }).catch( err => {
+    }).catch(err => {
         console.log(err);
     })
 }

@@ -65,13 +65,13 @@ const NavigationContent = ({isVisible, closeBtn, language, currentLocale, refres
                     <LogOut onClick={logOut}>Logout</LogOut>
                 </UserDetails>
 
-                <ChangeLanguage onClick={() => setLanguageVisible(!languageVisible)}>
+                {/* <ChangeLanguage onClick={() => setLanguageVisible(!languageVisible)}>
                     <LocaleFlag src={
                     language === "Chinese" ? require('../../Assets/icons/Flags/UK.png') : require('../../Assets/icons/Flags/China.png')
                 }/>
 
                     <Label>{language === "Chinese" ? 'Change Language' :'选择语言'}</Label>
-                </ChangeLanguage>
+                </ChangeLanguage> */}
                 <LanguagesOptions visible={languageVisible}>
                     <Item onClick={async () => {
                             if(language !== "Chinese") {

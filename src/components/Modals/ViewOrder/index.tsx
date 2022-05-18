@@ -7,6 +7,9 @@ import EnlargeImage from './EnlargeImage';
 import io from 'socket.io-client';
 import socketLink from '../../../socketContext';
 import store from '../../../app/state/store';
+import moment from 'moment'
+import updateOrderStatus from '../../../utils/updateorderstatus';
+import Refund from './refund.jsx'
 
 const socket = io(socketLink);
 
@@ -62,33 +65,73 @@ const checkType = (file: String) => {
 }
 
 const ViewOrderModal = ({ closeBtn, details, locale, user, orderDetails }: Props) => {
-    const { id, quantity, eta, schematics, description, currentProcess, surface, thickness } = details;
+    const { id, quantity, schematics, description, status, surface, thickness,updatedTime,refundReason } = details;
     const [showEnlarge, setShowEnlarge] = useState(false);
-    const [imgPath, setImgPath] = useState('');
-    const {users: {userEmail}} = store.getState();
+    const [imgPath, setImgPath] = useState('')
+    const {users: {userEmail}} = store.getState()
+    const [showModal, setShowModal] = useState(false)
 
-    const deleteOrder = () => {
-        let proceed = window.confirm(locale === 'English' ? ` Are you sure you want to delete this order:  ${orderDetails.id}` :`您确定要删除此订单吗: ${orderDetails.id}` );
-                proceed && axios.delete('/getOrder', {
-                    data: {
-                        user: user.id,
-                        value: orderDetails.id
-                    }
-                }).then( (result:any) => {
-                    store.dispatch({type: "DELETE_ORDER", payload: orderDetails.id});
-
-                    socket.emit('message-client', { 
-                        senderId: 'Customer-Service-auto', 
-                        username: user.username, 
-                        message: locale === "English" ? `Your order successfully deleted. Is there anything else I can do for you?` : "您的订单已成功删除。我还有什么可以为您做的吗？", 
-                        to: user.id, 
-                        date: new Date(),
-                        language: locale
-                    })
-                }).catch( (err:any) => {
-                    alert('there was an error deleting the order');
-                }).finally(() => closeBtn())
+    const boxStyle={
+        display:'flex'
     }
+
+    // 只有“待付款”、“收货”和“退货”这三种情况有操作
+    const btnList=()=>{
+        switch(status){
+            case '待付款': {
+                return <Button onClick={() => execuateAction('付款')}>付款</Button>
+            }
+            case '已发货': {
+                return <div style={boxStyle}>
+                    <Button onClick={() => execuateAction('收货')}>收货</Button>
+                    <Button onClick={() => execuateAction('退货')}>退货</Button>
+                </div>
+            }
+            default: return
+        }
+    }
+
+    const execuateAction=(action)=>{
+        switch(action) {
+            case '付款': {
+                updateOrderStatus(id,{status:'已付款'})
+                closeBtn()
+                return 
+            }
+            case '收货': {
+                updateOrderStatus(id,{status:'已完成'})
+                closeBtn()
+                return 
+            }
+            case '退货': {
+                setShowModal(true)
+                return
+            }
+            default: return 
+        }
+    }
+    // const deleteOrder = () => {
+    //     let proceed = window.confirm(locale === 'English' ? ` Are you sure you want to delete this order:  ${orderDetails.id}` :`您确定要删除此订单吗: ${orderDetails.id}` );
+    //             proceed && axios.delete('/getOrder', {
+    //                 data: {
+    //                     user: user.id,
+    //                     value: orderDetails.id
+    //                 }
+    //             }).then( (result:any) => {
+    //                 store.dispatch({type: "DELETE_ORDER", payload: orderDetails.id});
+
+    //                 socket.emit('message-client', { 
+    //                     senderId: 'Customer-Service-auto', 
+    //                     username: user.username, 
+    //                     message: locale === "English" ? `Your order successfully deleted. Is there anything else I can do for you?` : "您的订单已成功删除。我还有什么可以为您做的吗？", 
+    //                     to: user.id, 
+    //                     date: new Date(),
+    //                     language: locale
+    //                 })
+    //             }).catch( (err:any) => {
+    //                 alert('there was an error deleting the order');
+    //             }).finally(() => closeBtn())
+    // }
     return(
         <Container>
             <Wrapper>
@@ -102,8 +145,8 @@ const ViewOrderModal = ({ closeBtn, details, locale, user, orderDetails }: Props
                             <DetailLabel>{ locale === "English" ? `Order Description:`: '描述:' }</DetailLabel>
                             <DetailInfo>{description}</DetailInfo>
 
-                            <DetailLabel>{ locale === "English" ? `Current Proccess`: '当前进程:'}</DetailLabel>
-                            <DetailInfo>{currentProcess}</DetailInfo>
+                            <DetailLabel>当前进程:</DetailLabel>
+                            <DetailInfo>{status}</DetailInfo>
 
                             <DetailLabel>{ locale === "English" ? `Thickness`: '厚度:'}</DetailLabel>
                             <DetailInfo>{thickness} mm</DetailInfo>
@@ -118,8 +161,16 @@ const ViewOrderModal = ({ closeBtn, details, locale, user, orderDetails }: Props
                             <DetailLabel>{ locale === "English" ? `quantity:` : '数量:'}</DetailLabel>
                             <DetailInfo>{quantity}</DetailInfo>
 
-                            <DetailLabel>{ locale === "English" ? `Time to finish:`: '完成时间'}</DetailLabel>
-                            <DetailInfo>{eta}</DetailInfo>
+                            <DetailLabel>最近更新时间</DetailLabel>
+                            <DetailInfo>{moment(updatedTime).format('YYYY-M-D HH:mm')}</DetailInfo>
+
+                            {status==='已退货'?(<>
+                                <DetailLabel>退货理由</DetailLabel>
+                                <DetailInfo>
+                                    {refundReason}
+                                </DetailInfo>
+                            </>):null}
+
 
                            
                         </OrderRight>
@@ -157,10 +208,14 @@ const ViewOrderModal = ({ closeBtn, details, locale, user, orderDetails }: Props
                         </ImgWrapper>
                     </ImgContainer>
 
-                    <Delete onClick={() => deleteOrder()}>delete</Delete>
+                  {/* 按钮列表 */}
+                  {btnList()}
                 </ContentWrapper>
 
                 {showEnlarge && <EnlargeImage userEmail= {userEmail} ImgSrc={imgPath} closeBtn={() => setShowEnlarge(false)} />}
+            
+            {/* 退货模态框 */}
+            <Refund closeBtn={closeBtn} id={id} showModal={showModal} shutDownModal={()=>{setShowModal(false)}}/>
             </Wrapper>
         </Container>
     )
@@ -288,20 +343,20 @@ const ImgWrapper = styled.div`
 
 `;
 
-const Delete = styled.div`
+const Button = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
     height: 35px;
     width: 120px;
     margin-top: 10px;
-    background-color: #d27e7e;
+    background-color: aqua;
     border-radius: 10px 10px;
     margin-left: 30px;
 
     &:hover {
         transition: .5s;
-        background-color: #f55656;
+        background-color: #fff;
         cursor: pointer;
     }
 `;

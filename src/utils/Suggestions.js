@@ -7,15 +7,14 @@ let Pending = 0;
 let Complete = 0;
 
 export let SuggestedLinks = {
-    Chinese: [
-        {
+    Chinese: [{
             text: "新订单",
             countable: false,
             number: null,
         },
         {
             text: "看订单",
-            countable:true,
+            countable: true,
             number: View,
         },
         {
@@ -27,11 +26,10 @@ export let SuggestedLinks = {
             text: "完成的订单",
             countable: true,
             number: Complete,
-        } 
+        }
     ],
-    English: [
-        { 
-            text: "Create a new order", 
+    English: [{
+            text: "Create a new order",
             countable: false,
             number: null,
         },
@@ -54,32 +52,31 @@ export let SuggestedLinks = {
 }
 
 const ReloadDetails = () => {
-    setInterval( async () => {
+    setInterval(async() => {
         const dataPresent = localStorage.getItem('userData');
-        if(dataPresent){
+        if (dataPresent) {
             const Orders = await fetchOrders();
             let CompleteCount = 0;
             let PendingCount = 0;
-            Orders.forEach( item => {
-                if( item.currentProcess === 'Ready for collection') {
-                    CompleteCount++;
-                } else if (item.currentProcess.includes('Process')) {
+            Orders.forEach(item => {
+                if (item.status === '待付款' || item.status === '已发货') {
                     PendingCount++;
+                } else if (item.status === '已完成' || item.status === '已退货') {
+                    CompleteCount++;
                 }
             });
 
             View = Orders.length
 
-        SuggestedLinks = {
-                Chinese: [
-                    {
+            SuggestedLinks = {
+                Chinese: [{
                         text: "新订单",
                         countable: false,
                         number: 0,
                     },
                     {
                         text: "看订单",
-                        countable:true,
+                        countable: true,
                         number: View,
                     },
                     {
@@ -91,11 +88,10 @@ const ReloadDetails = () => {
                         text: "完成的订单",
                         countable: true,
                         number: CompleteCount,
-                    } 
+                    }
                 ],
-                English: [
-                    { 
-                        text: "Create a new order", 
+                English: [{
+                        text: "Create a new order",
                         countable: false,
                         number: 0,
                     },
@@ -121,23 +117,23 @@ const ReloadDetails = () => {
 }
 
 
-const fetchOrders = async () => {
-    const { 
+const fetchOrders = async() => {
+    const {
         users: {
             userEmail
-        } 
+        }
     } = store.getState();
 
     let UserOrder;
 
     await axios.get('http://localhost:5000/order', {
-        headers:{
+        headers: {
             auth: getCookie('jwt')
         },
-        params:{
+        params: {
             email: userEmail
         }
-    }).then( result => {
+    }).then(result => {
         let {
             data: {
                 Orders
@@ -146,12 +142,12 @@ const fetchOrders = async () => {
 
         UserOrder = Orders;
 
-       
+
     }).catch(err => console.log(err))
 
     return UserOrder;
 }
 
-(function () {
+(function() {
     ReloadDetails();
 })();

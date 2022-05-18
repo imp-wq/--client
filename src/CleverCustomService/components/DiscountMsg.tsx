@@ -1,15 +1,20 @@
 import React from "react"
 
 
-const DiscountMsg=props=>{
-  const {orderNum,MemberQuality,discount}=props
+const DiscountMsg=({data})=>{
+  const {discount,totalNum}=data
   return (
       <div className='tips'>
-            {props.orderNum>=MemberQuality?
-            (<p>您是我们的会员,可享受<strong>{discount}</strong>折优惠！</p>)
-            :
-            (<p>抱歉，您还不是我们的会员，无法享受折扣，可输入<strong> 会员 </strong>查看会员信息</p>)}
-        </div>
+          <p>我们的优惠规则是:</p>
+          <p>当已成交金额达到:</p>
+          <ul>
+            <li>10000-20000: 9折</li>
+            <li>20000-30000: 8.5折</li>
+            <li>30000以上: 7折</li>
+          </ul>
+          <p>您现在的已成交金额为:{totalNum}</p>
+          <p>可享受的折扣为:{discount}</p>
+      </div>
   )
 }
 

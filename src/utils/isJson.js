@@ -1,7 +1,10 @@
 export default (item) => {
-    item = typeof item !== "string"
-        ? JSON.stringify(item)
-        : item;
+    if (JSON.stringify(item) === '{}') return false
+
+
+    item = typeof item !== "string" ?
+        JSON.stringify(item) :
+        item;
 
     try {
         item = JSON.parse(item);

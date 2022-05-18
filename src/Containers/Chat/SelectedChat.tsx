@@ -126,7 +126,8 @@ const SelectedChat = ({ messages, user, online, to, toUser, locale, BotSuggestio
         })
     }
 
-    const handleListClick = (List: Order) => {
+    const handleListClick = (List: any) => {
+        console.log(List)
         switch(List.action) {
             case "Delete":   
                 let proceed = window.confirm(locale === 'English' ? ` Are you sure you want to delete this order:  ${value}` :`
@@ -228,16 +229,19 @@ const SelectedChat = ({ messages, user, online, to, toUser, locale, BotSuggestio
 
                             </div>
                             <Element  name="messageBox" id="messageBox" className="element">
-                                {message &&  (
+                            {/* {console.log(message.message,isJson(message.message),typeof message.message)} */}
+                                {
+                                message &&  (
                                         message.senderId === "Customer Service" && isJson(message.message)?
                                         handleBotResponse(JSON.parse(message.message))
-                                        : message.message
+                                        // : message.message
+                                        :''
                                 )}
                             </Element>
 
                             <Element  name="messageBox" id="messageBox" className="element">
                                 {/* 智能客服相关显示 */}
-                                <div><strong>智能客服:</strong></div>
+                                {/* <div><strong>智能客服:</strong></div> */}
                                 <PYblock context={{message, locale, BotSuggestions, user, to, socket}}/>
                             </Element>
                         </Message>

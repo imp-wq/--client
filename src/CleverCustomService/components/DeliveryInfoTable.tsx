@@ -9,6 +9,7 @@ const table=(props)=>{
       <thead>
           <tr>
               <th>订单ID</th>
+              <th>承运商</th>
               <th>已到达</th>
           </tr>
       </thead>
@@ -16,7 +17,8 @@ const table=(props)=>{
           {props.data.map(item=>
           <tr key={item._id}>
               <td>{item._id}</td>
-              <td>{item.position}</td>
+              <td>{item.deliveryCompany }</td>
+              <td>{item.deliveryCurrentLocation}</td>
           </tr>)}
       </tbody>
       </table>
